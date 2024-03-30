@@ -8,9 +8,14 @@
 </style>
 </head>
 <body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/lib/alea.min.js"></script>
 <tw-story><noscript><tw-noscript>JavaScript needs to be enabled to play Personality Quiz.</tw-noscript></noscript></tw-story>
 <tw-storydata name="Personality Quiz" startnode="1" creator="Twine" creator-version="2.8.1" format="Harlowe" format-version="3.3.8" ifid="DA03B0C5-DB6E-418C-9107-D9718D0D904F" options="" tags="" zoom="0.6" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">tw-sidebar {
   display: none;
+}
+
+tw-story {
+  justify-content: center;
 }
 
 .taco-img {
@@ -49,9 +54,9 @@ You’re dressed up just enough for a video call, but soon after you join a wet 
 [[Persevere-&gt;Eye Leave]]
 
 (set: $check_mirror to false)
-(set: $mirror_search to false)</tw-passagedata><tw-passagedata pid="4" name="Eye Wipe" tags="" position="900,600" size="100,100">It replenished itself, so you turn off your webcam to dry it completely.
+(set: $mirror_search to false)</tw-passagedata><tw-passagedata pid="4" name="Eye Wipe" tags="" position="900,600" size="100,100">There was a lot more than you thought, so you turn off your webcam to dry it completely.
 
-Tough you might&#39;ve scratched it too hard. You should take a look.
+You worry about the damage you&#39;ve done to your face. You should take a look.
 
 [[Find your mirror-&gt;Mirror Look]]
 
@@ -77,10 +82,18 @@ In its place remains a naked nail in the wall, without any indication there had 
 
 [[Search for it-&gt;Search]]
 
-(set: $check_mirror to true)</tw-passagedata><tw-passagedata pid="7" name="Webcam Look" tags="TODO" position="900,800" size="100,100">
+(set: $check_mirror to true)</tw-passagedata><tw-passagedata pid="7" name="Webcam Look" tags="" position="900,800" size="100,100">Your camera doesn&#39;t cooperate. It doesn&#39;t want to see you like this.
 
+After many attempts, you at last manage to view a split second of footage and you understand why you are better left unseen. Is it bad white balance, a weird filter, or did you really claw at your eyes like that?
 
-[[Basement]]</tw-passagedata><tw-passagedata pid="8" name="Outside" tags="" position="1300,400" size="100,100">You manage to leave your house and head to work.
+The basement door is next to your office. You remember an antique mirror had been left there.
+
+You feel an urge to destroy your skin. You hope you get to see yourself before you do.
+
+(link: &quot;Exfoliate&quot;)[(set: $pick to true)($go: &quot;[[Basement]]&quot;)]
+
+(link: &quot;Endure&quot;)[(set: $pick to false)($go: &quot;[[Basement]]&quot;)]
+</tw-passagedata><tw-passagedata pid="8" name="Outside" tags="" position="1300,400" size="100,100">You manage to leave your house and head to work.
 
 [[You feel followed, take a new route-&gt;New Route]]
 
@@ -103,14 +116,13 @@ Soon after you pass, you hear the sound of cracking wood. You imagine a branch p
 
 (link: &quot;Run&quot;)[(set: $ran to true)($go: &quot;[[Work]]&quot;)]
 
-(set: $new_route to true)</tw-passagedata><tw-passagedata pid="11" name="Old Route" tags="TODO" position="1500,600" size="100,100">Your old route is familiar, making the journey feel even faster.
+(set: $new_route to true)</tw-passagedata><tw-passagedata pid="11" name="Old Route" tags="" position="1500,600" size="100,100">You move quick, but you suspect its not quick enough. What&#39;s more, you&#39;ve heard chewing sounds for the last few blocks. Its not you, but you keep touching your mouth to be sure.
 
+You almost step on an animal carcass when you turn a corner. The meat is plump and fresh. Blood is still dripping out of a gash in its abdomen, and a vulture attempts to come near the two of you. It&#39;s eager to take a bite.
 
+(link: &quot;Shoo it away&quot;)[(set: $help to true)($go: &quot;[[Work]]&quot;)]
 
-
-(link: &quot;Help&quot;)[(set: $help to false)($go: &quot;[[Work]]&quot;)]
-
-(link: &quot;Leave&quot;)[(set: $help to true)($go: &quot;[[Work]]&quot;)]
+(link: &quot;Leave&quot;)[(set: $help to false)($go: &quot;[[Work]]&quot;)]
 
 (set: $new_route to false)</tw-passagedata><tw-passagedata pid="12" name="Work" tags="" position="1700,400" size="100,100">You arrive at your office, but you know //it// has beaten you here.
 
@@ -149,10 +161,13 @@ const total = (
 	(($hesitate ? 1 : 0) &lt;&lt; 6) +
 	(($mirror_search ? 1 : 0) &lt;&lt; 7) +
 	(($basement ? 1 : 0) &lt;&lt; 8) +
-	(($regret ? 1 : 0) &lt;&lt; 9)
-    // two trinaries left
+	(($regret ? 1 : 0) &lt;&lt; 9) +
+	(($pray ? 1 : 0) &lt;&lt; 10) +
+	(($pick ? 1 : 0) &lt;&lt; 11) +
+	($mirror &lt;&lt; 13) +
+	($notice &lt;&lt; 15)
 );
-const idx = Math.round(Math.random() * (window.taco_data.length - 1))
+const idx = Math.round(alea(total)() * (window.taco_data.length - 1));
 const chosen = window.taco_data[idx];
 _name = chosen.name;
 _detail = chosen.detail ? chosen.detail : &#39;&#39;;
@@ -197,7 +212,7 @@ You notice something wrong
 	For better or worse, you&#39;ll get to see it all.
 ](else:)[
 	You see a black liquid build up around your eye.
-	It feels like its been there all morning.
+	It feels like it&#39;s been there all morning.
 	You understand that //it// doesn&#39;t want you to see what happens next.
 ]}
 
@@ -205,7 +220,7 @@ In your reflection, a wall of flesh stands tall behind you. Teeth line its edges
 
 You suddenly understand yourself. You know why //it// wants you.
 
-[[You taste like...-&gt;Results]]</tw-passagedata><tw-passagedata pid="22" name="Vars" tags="startup" position="700,600" size="100,100">{
+[[You taste like...-&gt;Results]]</tw-passagedata><tw-passagedata pid="22" name="Vars" tags="startup" position="700,1000" size="100,100">{
 (set:$mirror to 0)
 (set:$remember to false)
 (set:$check_mirror to false)
@@ -219,6 +234,7 @@ You suddenly understand yourself. You know why //it// wants you.
 (set: $regret to false)
 (set: $notice to 0)
 (set: $pray to false)
+(set: $pick to false)
 }</tw-passagedata></tw-storydata>
 <script title="Twine engine code" data-main="harlowe">(function(){"use strict";
 var require,define;!function(){var e={},r={};require=function(i){var n=e[i];return n&&(r[i]=n[1].apply(void 0,n[0].map(require)),e[i]=void 0),r[i]},(define=function(r,i,n){if("function"==typeof r)return r();e[r]=[i,n]}).amd=!0}();/*!
